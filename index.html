@@ -4,23 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enigmatic Manor</title>
+
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> -->
+
+
     <style>
+        @font-face {
+            font-family: 'Classic Console';
+            src: url(./media/clacon2.ttf);
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity:1;}
+        }
+    
         body {
             background-color: black;
         }
         * {
             color: whitesmoke;
-            font-family:'Courier', Courier, monospace;
-                }
+            font-family:'Classic Console', monospace;
+        }
         .hide {
             display: none;
         }
-        #username {
+        #playerInput {
             background-color:black;
             border-style:none;
-
         }
+
+        #name {
+            opacity:0;
+            animation: fadeIn;
+            animation-duration: 2s;
+            animation-delay: .5s;
+            animation-fill-mode: forwards;
+        }
+
+        #intro1 {
+            opacity:0;
+            animation: fadeIn;
+            animation-duration: 2s;
+            animation-delay: .5s;
+            animation-fill-mode: forwards;
+        }
+
+        #intro2 {
+            opacity:0;
+            animation: fadeIn;
+            animation-duration: 2s;
+            animation-delay: 4s;
+            animation-fill-mode: forwards;
+        }
+
+        #intro3 {
+            opacity:0;
+            animation: fadeIn;
+            animation-duration: 2s;
+            animation-delay: 7s;
+            animation-fill-mode: forwards;
+        }
+
+        #intro4 {
+            opacity:0;
+            animation: fadeIn;
+            animation-duration: 2s;
+            animation-delay: 10s;
+            animation-fill-mode: forwards;
+        }
+
+
     </style>
+    <script src="script.js"></script>
 </head>
 <!-- Stage 1: 
 webpage is an artsy background with some kind of simple logic puzzle 
@@ -29,30 +86,51 @@ once logic puzzle is solved, go to stage 2
 
 stage 2: 
 text based game style resume  -->
+
+<!-- some random notes
+-would love to have some ascii-esque artwork in here to simulate rooms and things
+-transition to decrease width of the div with text and then transition to slide game based ui
+up in the empty space (game inventory, documents, etc)
+-lock puzzle? would seemingly be pretty easy but I just need to find free assets instead 
+of making it on my own-->
 <body>
-    <div id="test"></div>
-    <div>
-        <label for="username"><b>></b> What is your name?</label>
-        <input type="text" id="username" name="playerInput">
+    <div id="name">
+        <label for="playerInput"><b>></b> What is your name, inspector?</label>
+        <input type="text" id="playerInput" name="playerInput" onkeydown="enter(this)">
     </div>
-    <div class="hide">
-        <h3>The Enigmatic Manor</h3>
-        <p>
-            Welcome to "The Enigmatic Manor," a mysterious text-based adventure game. You find yourself standing at the front gate of an old and eerie manor, hidden deep within the foggy woods. 
-            The manor once belonged to a renowned eccentric scientist, Dr. Archibald Sinclair, who vanished under mysterious circumstances. Rumor has it that his spirit still haunts the estate, 
-            guarding a hidden treasure.
-        </p>
+    <div id="intro" class="hide">
+        <div id="intro1">
+            <h3>The Enigmatic Manor</h3>
+            <p>
+                Welcome to "The Enigmatic Manor," a mysterious text-based adventure game. 
+                You find yourself standing at the front gate of an old and eerie manor, hidden 
+                deep within the foggy woods.
+                
 
-        <p>Objective: Unravel the secrets of the manor, solve puzzles, and find the hidden treasure while avoiding the traps set by the late Dr. Sinclair.</p>
+                The manor once belonged to a renowned eccentric scientist, Dr. Archibald Sinclair, who vanished under mysterious circumstances. Rumor has it that his spirit still haunts the estate, 
+                guarding a hidden treasure.
+            </p>
+        </div>
 
-        <h4>Instructions:</h4>
-        <p>
-            Type commands using simple text, such as "go north," "examine painting," or "take key."
-            Explore different rooms and areas by navigating with directions like north, south, east, and west.
-            Investigate objects, gather clues, and piece together the mystery of the enigmatic manor.
-        </p>
+        <div id="intro2"> 
+            <p>
+                Objective: Unravel the secrets of the manor, solve puzzles, and find the hidden 
+                treasure while avoiding the traps set by the late Dr. Sinclair.
+            </p>
+        </div>
 
-        <p>Let the adventure begin!</p>
+        <div id="intro3">
+            <h4>Instructions:</h4>
+            <p>
+                Type commands using simple text, such as "go north," "examine painting," or "take key."
+                Explore different rooms and areas by navigating with directions like north, south, east, and west.
+                Investigate objects, gather clues, and piece together the mystery of the enigmatic manor.
+            </p>
+        </div>
+
+        <div id="intro4">
+            <p>Let the adventure begin!</p>
+        </div>
     </div>
 
     
@@ -110,8 +188,10 @@ text based game style resume  -->
         <p>You see a sparkling gem, possibly the rumored treasure.</p>
     
         <h5>Take gem</h5>
-        <p>As you try to lift the gem, an alarm bell rings, and the room begins to tremble. The 
-            floor opens beneath you, revealing a dark pit.</p>
+        <p>
+            As you try to lift the gem, an alarm bell rings, and the room begins to tremble. The 
+            floor opens beneath you, revealing a dark pit.
+        </p>
     
         <h5>Jump north</h5>
         <p>
@@ -155,10 +235,5 @@ text based game style resume  -->
         </p>
     </div>
 
-
-
-    <script>
-
-    </script>
 </body>
 </html>
