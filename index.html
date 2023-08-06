@@ -19,6 +19,11 @@
             from {opacity: 0;}
             to {opacity:1;}
         }
+
+        @keyframes fadeOut {
+            from {opacity: 1;}
+            to {opacity:0;}
+        }
     
         body {
             background-color: black;
@@ -30,12 +35,12 @@
         .hide {
             display: none;
         }
-        #playerInput {
+        #username, #playerInput {
             background-color:black;
             border-style:none;
         }
 
-        #name {
+        /* #name {
             opacity:0;
             animation: fadeIn;
             animation-duration: 2s;
@@ -75,9 +80,37 @@
             animation-fill-mode: forwards;
         }
 
+        #intro {
+            animation: fadeOut;
+            animation-duration: 2s;
+            animation-delay: 14s;
+            animation-fill-mode: forwards;
+        }
+
+        #enterFoyer, #playerInput {
+            opacity:0;
+            animation: fadeIn;
+            animation-duration: 2s;
+            animation-delay: 17s;
+            animation-fill-mode: forwards;
+        } 
+*/
+        #game {
+            position: fixed; 
+            bottom: 0; 
+            width:100%; 
+        } 
+        
+        .highlight {
+            color: green;
+        }
+        
+        p {
+            margin-top: 0;
+        }
 
     </style>
-    <script src="script.js"></script>
+    
 </head>
 <!-- Stage 1: 
 webpage is an artsy background with some kind of simple logic puzzle 
@@ -95,27 +128,28 @@ up in the empty space (game inventory, documents, etc)
 of making it on my own-->
 <body>
     <div id="name">
-        <label for="playerInput"><b>></b> What is your name, inspector?</label>
-        <input type="text" id="playerInput" name="playerInput" onkeydown="enter(this)">
+        <label for="username"><b>></b> What is your name, inspector?</label>
+        <input type="text" id="username" name="username" onkeydown="changeText(this)">
     </div>
     <div id="intro" class="hide">
         <div id="intro1">
-            <h3>The Enigmatic Manor</h3>
-            <p>
-                Welcome to "The Enigmatic Manor," a mysterious text-based adventure game. 
-                You find yourself standing at the front gate of an old and eerie manor, hidden 
-                deep within the foggy woods.
-                
-
-                The manor once belonged to a renowned eccentric scientist, Dr. Archibald Sinclair, who vanished under mysterious circumstances. Rumor has it that his spirit still haunts the estate, 
-                guarding a hidden treasure.
+            <p><span class="highlight"></span>
+                Thank you for arriving on such short notice, Detective 
+                <span class="highlight"><span id="inspectorName"></span></span>. I'll cut right to the chase; I've got 
+                a job for you. Eccentric and upcoming web developer, 
+                <span class="highlight">Dr. John Zayas</span>, has gone missing. His family is paying top 
+                dollar for us to investigate his last known location; the 
+                <span class="highlight">OLD MANOR</span> in the foggy woods.
+                 
             </p>
         </div>
 
         <div id="intro2"> 
             <p>
-                Objective: Unravel the secrets of the manor, solve puzzles, and find the hidden 
-                treasure while avoiding the traps set by the late Dr. Sinclair.
+                Just head over there and see what you can find out. Your objective is to find 
+                <span class="highlight">Dr. Zayas</span> or some clues to his whereabouts. Just remember 
+                <span class="highlight">Dr. Zayas</span> is a bit of an interesting personality... Keep 
+                your wits about you.
             </p>
         </div>
 
@@ -123,117 +157,221 @@ of making it on my own-->
             <h4>Instructions:</h4>
             <p>
                 Type commands using simple text, such as "go north," "examine painting," or "take key."
-                Explore different rooms and areas by navigating with directions like north, south, east, and west.
-                Investigate objects, gather clues, and piece together the mystery of the enigmatic manor.
+                Explore different rooms and areas by navigating with directions like north, south, east,
+                and west. Investigate objects, gather clues, and piece together the mystery of the 
+                enigmatic manor.
             </p>
         </div>
 
         <div id="intro4">
-            <p>Let the adventure begin!</p>
+            <p class="highlight">Good luck.</p>
         </div>
     </div>
 
     
         
+    
+    <div id="game" aria-live='assertive'>
+        <div id="enterFoyer" class="hide">
+            <p>
+                You stand at the entrance of the manor, surrounded by an eerie silence. The 
+                imposing wooden door creaks open, inviting you inside. Dusty chandeliers dimly 
+                light the grand <span class="highlight">FOYER</span>. As you step forward, the door slams 
+                shut behind you, and you realize there's no turning back.
+            </p>
 
-    <div class="hide">
-        <p>
-            You stand at the entrance of the manor, surrounded by an eerie silence. The 
-            imposing wooden door creaks open, inviting you inside. Dusty chandeliers dimly 
-            light the grand foyer. As you step forward, the door slams shut behind you, and 
-            you realize there's no turning back.
-        </p>
 
-        <h5>Go north</h5>
-        <p>
-            You find yourself in a dimly lit hallway. Doors line the walls on both sides. There 
-            are mysterious symbols etched onto the walls. A painting hangs on the far end of the 
-            corridor.
-        </p>
-    
-        <h5>Examine symbols</h5>
-        <p>
-            The symbols appear to be some ancient script, possibly a clue to unravel the mysteries 
-            of this place.
-        </p>
-    
-        <h5>Go east</h5>
-        <p>
-            You enter a dark study. Cobwebs hang from the bookshelves, and a large desk sits in 
-            the center. There's an open journal on the desk.
-        </p>
-    
-        <h5>Read journal</h5>
-        <p>
-            The journal contains cryptic notes and drawings, hinting at hidden passages within the 
-            manor.
-        </p>
-    
-        <h5>Go west</h5>
-        <p>
-            You discover a dusty laboratory filled with strange contraptions and alchemical 
-            equipment. There's a locked cabinet in the corner.
-        </p>
-    
-        <h5>Examine cabinet</h5>
-        <p>You notice a keyhole, and it seems you need a specific key to unlock it.</p>
-    
-        <h5>Go south</h5>
-        <p>
-            You find yourself in a grand dining hall. A long table is set with dusty plates and 
-            empty glasses. At the end of the hall, there's a shimmering object under a glass case.
-        </p>
-    
-        <h5>Examine object</h5>
-        <p>You see a sparkling gem, possibly the rumored treasure.</p>
-    
-        <h5>Take gem</h5>
-        <p>
-            As you try to lift the gem, an alarm bell rings, and the room begins to tremble. The 
-            floor opens beneath you, revealing a dark pit.
-        </p>
-    
-        <h5>Jump north</h5>
-        <p>
-            You manage to leap to safety, back in the hallway. The alarm stops, but the door 
-            to the dining hall is now locked.
-        </p>
-    
-        <h5>Go east</h5>
-        <p>You return to the study.</p>
+        </div>
 
-        <h5>Use key on cabinet</h5>
-        <p>
-            You use the key found in the journal to unlock the cabinet. Inside, you find a 
-            map revealing hidden passages.
-        </p>
+        <div id="enterHallway" class="hide">
+            <p>
+                You find yourself in a dimly lit <span class="highlight">HALLWAY</span>. Two
+                <span class="highlight">DOORS</span> line the walls on both sides. There are mysterious 
+                <span class="highlight">SYMBOLS</span> etched onto the walls. A 
+                <span class="highlight">PAINTING</span> hangs on the far end of the 
+                corridor.
+            </p>
+        </div>
 
-        <h5>Go west</h5>
-        <p>You return to the laboratory.</p>
-    
-        <h5>Examine contraptions</h5>
-        <p>You notice one of the contraptions has a hidden lever.</p>
-    
-        <h5>Pull lever</h5>
-        <p>The laboratory wall opens, revealing a secret passage.</p>
-    
-        <h5>Go north</h5>
-        <p>
-            You follow the secret passage, leading you to Dr. Sinclair's private quarters. 
-            There, you find a safe.
-        </p>
-    
-        <h5>Unlock safe</h5>
-        <p>
-            Using your wits, you manage to unlock the safe's combination. Inside, you find the 
-            long-lost treasure!
-        </p>
+        <div id="enterStudy" class="hide">
+            <p>
+                You enter a dark <span class="highlight">STUDY</span>. Cobwebs hang from the bookshelves, 
+                and a large desk sits in the center. There's an open <span class="highlight">JOURNAL</span> on the desk.
+            </p>
+        </div>
 
-        <p>
-            Congratulations! You have successfully solved the mystery of "The Enigmatic Manor" 
-            and claimed the hidden treasure.
-        </p>
+        <div id="enterLab" class="hide">
+            <p>
+                You discover a dusty <span class="highlight">LABORATORY</span> filled with strange 
+                contraptions and alchemical <span id="reveal">equipment</span>. There's a locked 
+                <span class="highlight">CABINET</span> in the corner.
+            </p>
+        </div>
+
+        <div id="noHope" class="hide">
+            <p>
+                The door is locked. I'm going to have to press on.
+            </p>
+        </div>
+        <div id="noWayOut" class="hide">
+            <p>
+                There's no way out. I'm going to have to press on.
+            </p>
+        </div>
+
+        <div id="enterDiningHall" class="hide">
+            <p>
+                You find yourself in a grand <span class="highlight">DINING HALL</span>. A long table is 
+                set with dusty plates and empty glasses. At the end of the hall, there's a shimmering 
+                <span class="highlight">OBJECT</span> under a glass case.
+            </p>
+        </div>
+
+        <div id="enterPrivateQuarters" class="hide"> 
+            <p>You're in the <span class="highlight">PRIVATE QUARTERS</span></p>
+        </div>
+
+        <div id="examineDoors" class="hide">
+            <p>
+                There's a dark mahogany door to the <span class="highlight">EAST</span>. To the 
+                <span class="highlight">WEST</span> there's another door 
+                with a cold blue flickering light eminanting from the crack under the door
+            </p>
+        </div>
+
+        <div id="examineSymbols" class="hide">
+            <p>
+                The <span class="highlight">SYMBOLS</span> appear to be some ancient script, possibly a clue to unravel the mysteries 
+                of this place.
+            </p>
+        </div>
+
+        <div id="examinePainting" class="hide">
+            <p>
+                An enormous portrait of <span class="highlight">Dr. Zayas</span>. 
+            </p>
+        </div>
+
+        <div id="examineJournal" class="hide">
+            <p>
+                A weathered leather-bound journal seemingly filled with notes. I should 
+                <span class="highlight">READ</span> this.
+            </p>
+        </div>
+        
+        <div id="readJournal" class="hide">
+            <p>
+                The notes in here are written in a script similar to the <span class="highlight">SYMBOLS</span>
+                in the <span class="highlight">HALLWAY</span>. A <span class="highlight">KEY</span> clinks at your feet from in between the pages.
+            </p>
+        </div>
+
+        <div id="readJournalAgain" class="hide">
+            <p>
+                There's nothing more I can gain from this.
+            </p>
+        </div>
+
+        <div id="returnFoyer" class="hide">
+            <p>
+                You're back in the <span class="highlight">FOYER</span>..
+            </p>
+        </div>
+        <div id="returnHallway" class="hide">
+            <p>
+                You're back in the <span class="highlight">HALLWAY</span>..
+            </p>
+        </div>
+        <div id="returnStudy" class="hide">
+            <p>
+                You're back in the <span class="highlight">STUDY</span>..
+            </p>
+        </div>
+        <div id="returnLab" class="hide">
+            <p>
+                You're back in the <span class="highlight">LAB</span>..
+            </p>
+        </div>
+        <div id="returnDiningHall" class="hide">
+            <p>
+                You're back in the <span class="highlight">DINING HALL</span>..
+            </p>
+        </div>
+        <div id="returnQuarters" class="hide">
+            <p>
+                You're back in the <span class="highlight">QUARTERS</span>..
+            </p>
+        </div>
+
+        <div id="flavorStairs" class="hide">
+            <p>
+                There's a old set of stairs here... I doubt they could support my weight.
+            </p>
+        </div>
+
+        <div id="flavorRain" class="hide">
+            <p>
+                The windows are boarded up. It's raining outside.
+            </p>
+        </div>
+
+        <div id="flavorNothing" class="hide">
+            <p>
+                There's nothing here..
+            </p>
+        </div>
+
+        <div id="flavorTTRPGS" class="hide">
+            <p>Bookshelves line the wall. Dr. Zayas really seems to like tabletop roleplaying games.</p>
+        </div>
+
+        <div id="unknownStill" class="hide">
+            <p>You don't know where that is yet</p>
+        </div>
+
+        <div id="notThere" class="hide">
+            <p>You're not in the that room.</p>
+        </div>
+
+        <div id="cantSee" class="hide">
+            <p>You can't see that.</p>
+        </div>
+
+        <div id="error" class="hide">
+            <p>I don't understand that command.</p>
+        </div>
+
+        <div id="examineCabinet" class="hide">
+            <p>You notice a keyhole, and it seems you need a specific <span class="highlight">KEY</span> to unlock it.</p>
+        </div>
+
+        <div id="unlockCabinet" class="hide">
+            <p>
+                You use the <span class="highlight">KEY</span> found in the <span class="highlight">JOURNAL</span> to unlock the <span class="highlight">CABINET</span>. Inside, you find a 
+                <span class="highlight">MAP</span> revealing hidden passages. 
+            </p>
+        </div>
+	
+        <div id="keyAcquired" class="hide">
+            <p><u>
+                You have acquired the <span class="highlight">KEY</span> 
+            </u></p>
+        </div>
+
+        <div id="examineMap" class="hide">
+            <p>
+                blahblah
+            </p>
+        </div>
+
+
+        <div id="playerInput" class="hide">
+            <label for="playerInput"><b>></b></label>
+            <input type="text" id="playerInput" name="playerInput" onkeydown="enter(this)">
+        </div>
+
     </div>
 
+    <script src="script.js"></script>
 </body>
 </html>
