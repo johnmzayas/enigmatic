@@ -1,4 +1,24 @@
-// known bug; you can "EXAMINE" items that you haven't discovered yet
+// to do list:
+
+// HTML changes/additions;
+// change returnHallway to describe all available paths since its the focal point for the game
+// change all HTML text to say "You do x" instead of "I do x" for consistency
+// change enterLab to describe that there is an open door to the DINING HALL to the SOUTH
+// change mapXjournal to describe that the secret passage is in the STUDY but it has to be opened somehow and the
+//   player must explore. Could maybe through a riddle in there?
+// fix typo in examineSymbols
+// fix typo in pullLever to reflect where the secret passage actually is
+// add HTML text and JS variables for examineObject, takeObject, escaped, and ded (also probably
+//   change that variables name)
+
+// JS changes/additions;
+// Add a "HELP" command to display all the available commands
+// Add an "EXAMINE HERE" command to display information about the room we're in
+// Add an "EXAMINE KEY" command
+// Add an additional parameter for if you try to UNLOCK or EXAMINE the cabinet after it's been opened
+// Add a game over condition if the player says anything besides "JUMP NORTH" after they take the gem
+//  that also allowers the player to play the game again if they want.
+// Add a win condition if the player reached the PRIVATE QUARTERS
 
 const rooms = [
   "foyer",
@@ -36,6 +56,7 @@ const returnDiningHall = document.getElementById("returnDiningHall").innerHTML;
 const notThere = document.getElementById("notThere").innerHTML;
 const cantSee = document.getElementById("cantSee").innerHTML;
 const error = document.getElementById("error").innerHTML;
+const notJournal = document.getElementById("notJournal").innerHTML;
 
 // examine desc
 const examineDoors = document.getElementById("examineDoors").innerHTML;
@@ -47,6 +68,7 @@ const readJournalAgain = document.getElementById("readJournalAgain").innerHTML;
 const readJournal = document.getElementById("readJournal").innerHTML;
 const examineCabinet = document.getElementById("examineCabinet").innerHTML;
 const unlockCabinet = document.getElementById("unlockCabinet").innerHTML;
+const examineEquipment = document.getElementById("examineEquipment").innerHTML;
 
 // flavor text
 const flavorStairs = document.getElementById("flavorStairs").innerHTML;
@@ -57,6 +79,15 @@ const noWayOut = document.getElementById("noWayOut").innerHTML;
 const flavorTTRPGS = document.getElementById("flavorTTRPGS").innerHTML;
 const unknownStill = document.getElementById("unknownStill").innerHTML;
 const keyAcquired = document.getElementById("keyAcquired").innerHTML;
+const mapAcquired = document.getElementById("mapAcquired").innerHTML;
+const translatedSymbols =
+  document.getElementById("translatedSymbols").innerHTML;
+const emailAcquired = document.getElementById("emailAcquired").innerHTML;
+const lockedCabinet = document.getElementById("lockedCabinet").innerHTML;
+const mapXjournal = document.getElementById("mapXjournal").innerHTML;
+const revealLab = document.getElementById("revealLab").innerHTML;
+const pullLever = document.getElementById("pullLever").innerHTML;
+const revealStudy = document.getElementById("revealStudy").innerHTML;
 
 // room logic
 var foyerVisited = false;
@@ -65,10 +96,28 @@ var studyVisited = false;
 var labVisited = false;
 var privateQuartersVisited = false;
 var diningHallVisited = false;
+var labReVisited = false;
+var studyReVisited = false;
+
+// var foyerVisited = true;
+// var hallwayVisited = true;
+// var studyVisited = true;
+// var labVisited = true;
+// var privateQuartersVisited = true;
+// var diningHallVisited = true;
+// var labReVisited = false;
 
 // items
 var ironKey = false;
-const map = false;
+var map = false;
+var newMap = false;
+var leverPulled = false;
+var gem = false;
+
+// var ironKey = true;
+// var map = true;
+// var newMap = true;
+// var leverPulled = false;
 
 function gameStart(e) {
   if (event.key === "Enter" || e.keyCode === 13) {
@@ -160,15 +209,28 @@ function enter(e) {
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", returnStudy);
       } else if (currentRoom === rooms[5]) {
-        currentRoom = rooms[3];
-        console.log(currentRoom);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", returnLab);
+        if (newMap === true && labReVisited !== true) {
+          labReVisited = true;
+          currentRoom = rooms[3];
+          console.log(currentRoom);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", revealLab);
+        } else {
+          currentRoom = rooms[3];
+          console.log(currentRoom);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", returnLab);
+        }
       }
+
       // -------------------------------------EAST---------------------------------------------
       //
     } else if (valueEntered === "EAST" || valueEntered === "GO EAST") {
@@ -183,15 +245,28 @@ function enter(e) {
         console.log(currentRoom);
       } else if (currentRoom === rooms[1]) {
         if (studyVisited === true) {
-          currentRoom = rooms[2];
-          console.log(currentRoom);
+          if (leverPulled === true && studyReVisited !== true) {
+            studyReVisited = true;
+            currentRoom = rooms[2];
+            console.log(currentRoom);
 
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", returnStudy);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", revealStudy);
+          } else {
+            currentRoom = rooms[2];
+            console.log(currentRoom);
+
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", returnStudy);
+          }
         } else {
           currentRoom = rooms[2];
           studyVisited = true;
@@ -266,14 +341,26 @@ function enter(e) {
             .getElementById("playerInput")
             .insertAdjacentHTML("beforebegin", enterLab);
         } else if (labVisited === true) {
-          currentRoom = rooms[3];
-          console.log(currentRoom);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", returnLab);
+          if (newMap === true && labReVisited !== true) {
+            labReVisited = true;
+            currentRoom = rooms[3];
+            console.log(currentRoom);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", revealLab);
+          } else {
+            currentRoom = rooms[3];
+            console.log(currentRoom);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("playerInput")
+              .insertAdjacentHTML("beforebegin", returnLab);
+          }
         }
       } else if (currentRoom === rooms[2]) {
         currentRoom = rooms[1];
@@ -335,15 +422,26 @@ function enter(e) {
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", returnFoyer);
       } else if (currentRoom === rooms[2]) {
-        currentRoom = rooms[4];
-        console.log(currentRoom);
-        privateQuartersVisited = true;
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", enterPrivateQuarters);
+        if (leverPulled !== true) {
+          console.log(currentRoom);
+          privateQuartersVisited = true;
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", flavorNothing);
+        } else {
+          currentRoom = rooms[4];
+          console.log(currentRoom);
+          privateQuartersVisited = true;
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", enterPrivateQuarters);
+        }
       } else if (currentRoom === rooms[3]) {
         if (diningHallVisited === true) {
           currentRoom = rooms[5];
@@ -442,14 +540,26 @@ function enter(e) {
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (studyVisited === true) {
-        currentRoom = rooms[2];
-        console.log(currentRoom);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", returnStudy);
+        if (leverPulled === true && studyReVisited !== true) {
+          studyReVisited = true;
+          currentRoom = rooms[2];
+          console.log(currentRoom);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", revealStudy);
+        } else {
+          currentRoom = rooms[2];
+          console.log(currentRoom);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", returnStudy);
+        }
       }
     } else if (
       valueEntered === "GO LAB" ||
@@ -467,14 +577,26 @@ function enter(e) {
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (labVisited === true) {
-        currentRoom = rooms[3];
-        console.log(currentRoom);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", returnLab);
+        if (newMap === true && labReVisited !== true) {
+          labReVisited = true;
+          currentRoom = rooms[3];
+          console.log(currentRoom);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", revealLab);
+        } else {
+          currentRoom = rooms[3];
+          console.log(currentRoom);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", returnLab);
+        }
       }
     } else if (
       valueEntered === "GO PRIVATE QUARTERS" ||
@@ -615,12 +737,24 @@ function enter(e) {
       valueEntered === "EXAMINE THE SYMBOLS"
     ) {
       if (currentRoom === rooms[1]) {
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-        document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", examineSymbols);
+        if (newMap === true) {
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", translatedSymbols);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", emailAcquired);
+        } else {
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", examineSymbols);
+        }
       } else if (currentRoom !== rooms[1]) {
         if (hallwayVisited === true) {
           document
@@ -749,12 +883,16 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[3]) {
         if (ironKey === true) {
+          map = true;
           document
             .getElementById("playerInput")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
             .getElementById("playerInput")
             .insertAdjacentHTML("beforebegin", unlockCabinet);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", mapAcquired);
         } else {
           document
             .getElementById("playerInput")
@@ -762,6 +900,47 @@ function enter(e) {
           document
             .getElementById("playerInput")
             .insertAdjacentHTML("beforebegin", examineCabinet);
+        }
+      } else if (currentRoom !== rooms[3]) {
+        if (labVisited === true) {
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", cantSee);
+        } else {
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", error);
+        }
+      }
+    } else if (
+      valueEntered === "UNLOCK CABINET" ||
+      valueEntered === "UNLOCK THE CABINET"
+    ) {
+      if (currentRoom === rooms[3]) {
+        if (ironKey === true) {
+          map = true;
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", unlockCabinet);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", mapAcquired);
+        } else {
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+          document
+            .getElementById("playerInput")
+            .insertAdjacentHTML("beforebegin", lockedCabinet);
         }
       } else if (currentRoom !== rooms[3]) {
         if (labVisited === true) {
@@ -821,40 +1000,179 @@ function enter(e) {
       }
     } else if (
       valueEntered === "EXAMINE MAP" ||
-      valueEntered === "EXAMINE THE MAP" ||
-      valueEntered === "TAKE MAP" ||
-      valueEntered === "TAKE THE MAP"
+      valueEntered === "EXAMINE THE MAP"
     ) {
-      if (currentRoom === rooms[3]) {
+      if (map === true) {
         document
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", examineMap);
-      } else if (ironKey === true) {
+      } else if (map !== true) {
         document
           .getElementById("playerInput")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
           .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", readJournalAgain);
-      } else if (currentRoom !== rooms[2]) {
-        if (studyVisited === true) {
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", cantSee);
-        } else {
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", error);
-        }
+          .insertAdjacentHTML("beforebegin", error);
+      }
+    } else if (
+      valueEntered === "COMBINE MAP WITH JOURNAL" ||
+      valueEntered === "COMBINE JOURNAL WITH MAP"
+    ) {
+      if (map === true && currentRoom === rooms[2]) {
+        newMap = true;
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", mapXjournal);
+      } else if (map === true && currentRoom !== rooms[2]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", notJournal);
+      } else {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", error);
+      }
+    } else if (
+      valueEntered === "EXAMINE EQUIPMENT" ||
+      valueEntered === "EXAMINE THE EQUIPMENT"
+    ) {
+      if (newMap === true && currentRoom === rooms[3]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", examineEquipment);
+      } else if (newMap === true && currentRoom !== rooms[3]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", cantSee);
+      } else {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", error);
+      }
+    } else if (
+      valueEntered === "PULL LEVER" ||
+      valueEntered === "PULL THE LEVER"
+    ) {
+      if (newMap === true && currentRoom === rooms[3]) {
+        leverPulled = true;
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", pullLever);
+      } else if (newMap === true && currentRoom !== rooms[3]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", cantSee);
+      } else {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", error);
+      }
+    } else if (
+      valueEntered === "EXAMINE OBJECT" ||
+      valueEntered === "EXAMINE THE OBJECT"
+    ) {
+      if (currentRoom === rooms[5]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          // ---------------------------------------------add shit here pls-----------------------
+          .insertAdjacentHTML("beforebegin", "examineObject");
+      } else if (diningHallVisited === true && currentRoom !== rooms[3]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", cantSee);
+      } else {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", error);
+      }
+    } else if (
+      valueEntered === "TAKE GEM" ||
+      valueEntered === "TAKE THE GEM" ||
+      valueEntered === "TAKE OBJECT" ||
+      valueEntered === "TAKE THE OBJECT"
+    ) {
+      if (currentRoom === rooms[5]) {
+        gem = true;
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          // ---------------------------------------------add shit here pls-----------------------
+          .insertAdjacentHTML("beforebegin", "takeObject");
+      } else if (diningHallVisited === true && currentRoom !== rooms[3]) {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", cantSee);
+      } else {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", error);
+      }
+    } else if (gem === true) {
+      if (valueEntered !== "JUMP NORTH") {
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          // ---------------------------------------------add shit here pls-----------------------
+          .insertAdjacentHTML("beforebegin", "ded");
+      } else {
+        currentRoom = rooms[3];
+        console.log(currentRoom);
+        document
+          .getElementById("playerInput")
+          .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+        document
+          .getElementById("playerInput")
+          // ---------------------------------------------add shit here pls-----------------------
+          .insertAdjacentHTML("beforebegin", "escaped");
       }
     } else {
       document
