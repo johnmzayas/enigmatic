@@ -5,112 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enigmatic Manor</title>
 
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-
-    <style>
-        @font-face {
-            font-family: 'Classic Console';
-            src: url(./media/clacon2.ttf);
-        }
-        @keyframes fadeIn {
-            from {opacity: 0;}
-            to {opacity:1;}
-        }
-
-        @keyframes fadeOut {
-            from {opacity: 1;}
-            to {opacity:0;}
-        }
-    
-        body {
-            background-color: black;
-        }
-        * {
-            color: whitesmoke;
-            font-family:'Classic Console', monospace;
-        }
-        .hide {
-            display: none;
-        }
-        #username, #playerInput {
-            background-color:black;
-            border-style:none;
-        }
-
-        /* #name {
-            opacity:0;
-            animation: fadeIn;
-            animation-duration: 2s;
-            animation-delay: .5s;
-            animation-fill-mode: forwards;
-        }
-
-        #intro1 {
-            opacity:0;
-            animation: fadeIn;
-            animation-duration: 2s;
-            animation-delay: .5s;
-            animation-fill-mode: forwards;
-        }
-
-        #intro2 {
-            opacity:0;
-            animation: fadeIn;
-            animation-duration: 2s;
-            animation-delay: 4s;
-            animation-fill-mode: forwards;
-        }
-
-        #intro3 {
-            opacity:0;
-            animation: fadeIn;
-            animation-duration: 2s;
-            animation-delay: 7s;
-            animation-fill-mode: forwards;
-        }
-
-        #intro4 {
-            opacity:0;
-            animation: fadeIn;
-            animation-duration: 2s;
-            animation-delay: 10s;
-            animation-fill-mode: forwards;
-        }
-
-        #intro {
-            animation: fadeOut;
-            animation-duration: 2s;
-            animation-delay: 14s;
-            animation-fill-mode: forwards;
-        }
-
-        #enterFoyer, #playerInput {
-            opacity:0;
-            animation: fadeIn;
-            animation-duration: 2s;
-            animation-delay: 17s;
-            animation-fill-mode: forwards;
-        } 
-*/
-        #game {
-            position: fixed; 
-            bottom: 0; 
-            width:100%; 
-        } 
-        
-        .highlight {
-            color: green;
-            text-transform: uppercase;
-        }
-        
-        p {
-            margin-top: 0;
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
     
 </head>
 <!-- Stage 1: 
@@ -128,13 +27,14 @@ up in the empty space (game inventory, documents, etc)
 -lock puzzle? would seemingly be pretty easy but I just need to find free assets instead 
 of making it on my own-->
 <body>
-    <div id="name">
-        <label for="username"><b>></b> What is your name, inspector?</label>
+    <div id="name" class="container-fluid">
+        <label for="username">> What is your name, inspector?</label>
         <input type="text" id="username" name="username" onkeydown="changeText(this)">
     </div>
-    <div id="intro" class="hide">
-        <div id="intro1">
-            <p><span class="highlight"></span>
+
+    <div id="intro" class="hide" class="container" class="row">
+        <div id="intro1" class="col-md-10">
+            <p>
                 Thank you for arriving on such short notice, Detective 
                 <span class="highlight"><span id="inspectorName"></span></span>. I'll cut right to the chase; I've got 
                 a job for you. Eccentric and upcoming web developer, 
@@ -145,7 +45,7 @@ of making it on my own-->
             </p>
         </div>
 
-        <div id="intro2"> 
+        <div id="intro2" class="col-md-10"> 
             <p>
                 Just head over there and see what you can find out. Your objective is to find 
                 <span class="highlight">Dr. Zayas</span> or some clues to his whereabouts. Just remember 
@@ -154,7 +54,7 @@ of making it on my own-->
             </p>
         </div>
 
-        <div id="intro3">
+        <div id="intro3" class="col-md-10">
             <h4>Instructions:</h4>
             <p>
                 Type commands using simple text, such as "go north," "examine painting," or "take key."
@@ -164,7 +64,7 @@ of making it on my own-->
             </p>
         </div>
 
-        <div id="intro4">
+        <div id="intro4" class="col-md-10">
             <p class="highlight">Good luck.</p>
         </div>
     </div>
@@ -172,7 +72,7 @@ of making it on my own-->
     
         
     
-    <div id="game" aria-live='assertive'>
+    <div id="game" aria-live='assertive' class="container">
         <div id="enterFoyer" class="hide">
             <p>
                 You stand at the entrance of the manor, surrounded by an eerie silence. The 
@@ -205,7 +105,9 @@ of making it on my own-->
             <p>
                 You discover a dusty <span class="highlight">LABORATORY</span> filled with strange 
                 contraptions and alchemical equipment. There's a locked 
-                <span class="highlight">CABINET</span> in the corner.
+                <span class="highlight">CABINET</span> in the corner. A door on the 
+                <span class="highlight">south</span> wall pouring faint candlelight into the 
+                <span class="highlight">lab</span>.
             </p>
         </div>
 
@@ -257,8 +159,8 @@ of making it on my own-->
 
         <div id="examineSymbols" class="hide">
             <p>
-                The <span class="highlight">SYMBOLS</span> appear to be some ancient script, possibly a clue to unravel the mysteries 
-                of this place.
+                The <span class="highlight">SYMBOLS</span> appear to be some ancient script, possibly a 
+                clue to unravel the mysteries of this place.
             </p>
         </div>
 
@@ -270,7 +172,7 @@ of making it on my own-->
 
         <div id="examineJournal" class="hide">
             <p>
-                A weathered leather-bound journal seemingly filled with notes. I should 
+                A weathered leather-bound journal seemingly filled with notes. You could 
                 <span class="highlight">READ</span> this.
             </p>
         </div>
@@ -282,9 +184,9 @@ of making it on my own-->
             </p>
         </div>
 
-        <div id="readJournalAgain" class="hide">
+        <div id="noMore" class="hide">
             <p>
-                There's nothing more I can gain from this.
+                There's nothing more you can gain from this.
             </p>
         </div>
 
@@ -295,7 +197,9 @@ of making it on my own-->
         </div>
         <div id="returnHallway" class="hide">
             <p>
-                You're back in the <span class="highlight">HALLWAY</span>..
+                You're back in the <span class="highlight">HALLWAY</span>.. There's a door to the 
+                <span class="highlight">east</span>, <span class="highlight">west</span>, and 
+                <span class="highlight">south</span>.
             </p>
         </div>
         <div id="returnStudy" class="hide">
@@ -321,7 +225,7 @@ of making it on my own-->
 
         <div id="flavorStairs" class="hide">
             <p>
-                There's a old set of stairs here... I doubt they could support my weight.
+                There's a old set of stairs here... You doubt they could support your weight.
             </p>
         </div>
 
@@ -379,8 +283,8 @@ of making it on my own-->
                 It's annotated in a strange language, similar to the mysterious 
                 <span class="highlight">SYMBOLS</span> in the hallway. The <span class="highlight">MAP</span> 
                 hints at hidden passages within the manor, but I'll need more to make sense of this. 
-                (I bet if I <span class="highlight">COMBINE</span> this <span class="highlight">WITH</span> 
-                something else, it'll be more clear...)
+                (You can <span class="highlight">COMBINE</span> this <span class="highlight">WITH</span> 
+                something else..)
             </p>
         </div>
 
@@ -399,10 +303,11 @@ of making it on my own-->
 
         <div id="mapXjournal" class="hide">
             <p>
-                In a few moments, you're able to make sense of the strange 
+                You're able to make sense of the strange 
                 <span class="highlight">SYMBOLS</span>. You now know that 
-                there's a secret passage hidden in the <span class="highlight">LABORATORY</span>, 
-                leading to <span class="highlight">Dr. Zayas's</span> <span class="highlight">PRIVATE QUARTERS</span>.
+                there's a secret passage hidden in the <span class="highlight">STUDY</span>, 
+                leading to <span class="highlight">Dr. Zayas's</span> <span class="highlight">PRIVATE QUARTERS</span>..
+                The notes don't say how to open it though. 
             </p>
         </div>
 
@@ -414,7 +319,8 @@ of making it on my own-->
 
         <div id="pullLever" class="hide">
             <p>
-                The <span class="highlight">laboratory</span> wall opens, revealing a secret passage.
+                You hear a click and the sound of something heavy scraping on the floor coming from the 
+                <span class="highlight">study</span>.
             </p>
         </div>
 
@@ -438,14 +344,56 @@ of making it on my own-->
             </u></p>
         </div>
 
+        <div id="examineObject" class="hide">
+            <p>
+                A pristine <span class="highlight">gem</span> sits in a clear glass case. 
+            </p>
+        </div>
+
+        <div id="takeObject" class="hide">
+            <p>
+                As you try to lift the <span class="highlight">gem</span>, an alarm bell rings, and the room begins to tremble. The 
+                floor opens beneath you, revealing a dark pit.   
+            </p>
+            <p><u>
+                You're going to have to <span class="highlight">JUMP</span>!
+            </u></p>
+        </div>
+
+        <div id="escaped" class="hide">
+            <p>
+                You manage to leap to safety, back in the <span class="highlight">lab</span>>. The alarm stops, but the door 
+                to the <span class="highlight">dining hall</span> is now locked.
+            </p>
+        </div>
+
+        
+        
+        <div id="scrollingText">
+
+        </div>
 
         <div id="playerInput" class="hide">
             <label for="playerInput"><b>></b></label>
             <input type="text" id="playerInput" name="playerInput" onkeydown="enter(this)">
         </div>
+    </div>
 
+    <div id="gameOver" class="hide" class="container">
+        <p>
+            You plummet to your death. 
+        </p>
+        <button id="restart" class="button" type="button" value="restart" onclick="location.reload(true)" ><span class="highlight">RESTART?</span></button>
+    </div>
+
+    <div id="win" class="hide" class="container">
+        <p>
+            You win!
+        </p>
+        <button id="restart" class="button" type="button" value="restart" onclick="location.reload(true)" ><span class="highlight">RESTART?</span></button>
     </div>
 
     <script src="script.js"></script>
+    
 </body>
 </html>

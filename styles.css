@@ -1,0 +1,111 @@
+@font-face {
+  font-family: "Classic Console";
+  src: url(./media/clacon2.ttf);
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+body {
+  background-color: black;
+}
+
+* {
+  font-size: 17.5px;
+  color: whitesmoke;
+  font-family: "Classic Console", monospace;
+  padding: 2px;
+}
+
+.hide {
+  display: none;
+}
+
+#username, #playerInput {
+  background-color: black;
+  border-style: none;
+}
+
+/* #name {
+    opacity:0;
+    animation: fadeIn;
+    animation-duration: 2s;
+    animation-delay: .5s;
+    animation-fill-mode: forwards;
+}
+
+#intro1 {
+    opacity:0;
+    animation: fadeIn;
+    animation-duration: 2s;
+    animation-delay: .5s;
+    animation-fill-mode: forwards;
+}
+
+#intro2 {
+    opacity:0;
+    animation: fadeIn;
+    animation-duration: 2s;
+    animation-delay: 4s;
+    animation-fill-mode: forwards;
+}
+
+#intro3 {
+    opacity:0;
+    animation: fadeIn;
+    animation-duration: 2s;
+    animation-delay: 7s;
+    animation-fill-mode: forwards;
+}
+
+#intro4 {
+    opacity:0;
+    animation: fadeIn;
+    animation-duration: 2s;
+    animation-delay: 10s;
+    animation-fill-mode: forwards;
+}
+
+#intro {
+    animation: fadeOut;
+    animation-duration: 2s;
+    animation-delay: 14s;
+    animation-fill-mode: forwards;
+}
+
+#enterFoyer, #playerInput {
+    opacity:0;
+    animation: fadeIn;
+    animation-duration: 2s;
+    animation-delay: 17s;
+    animation-fill-mode: forwards;
+} 
+*/
+#game, #gameOver {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.highlight {
+  color: green;
+  text-transform: uppercase;
+}
+
+p {
+  margin-top: 0;
+}
+
+/*# sourceMappingURL=styles.css.map */

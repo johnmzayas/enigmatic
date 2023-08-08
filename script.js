@@ -1,33 +1,21 @@
 // to do list:
 
-// HTML changes/additions;
-// change returnHallway to describe all available paths since its the focal point for the game
-// change all HTML text to say "You do x" instead of "I do x" for consistency
-// change enterLab to describe that there is an open door to the DINING HALL to the SOUTH
-// change mapXjournal to describe that the secret passage is in the STUDY but it has to be opened somehow and the
-//   player must explore. Could maybe through a riddle in there?
-// fix typo in examineSymbols
-// fix typo in pullLever to reflect where the secret passage actually is
-// add HTML text and JS variables for examineObject, takeObject, escaped, and ded (also probably
-//   change that variables name)
-
 // JS changes/additions;
-// Add a "HELP" command to display all the available commands
-// Add an "EXAMINE HERE" command to display information about the room we're in
-// Add an "EXAMINE KEY" command
 // Add an additional parameter for if you try to UNLOCK or EXAMINE the cabinet after it's been opened
 // Add a game over condition if the player says anything besides "JUMP NORTH" after they take the gem
 //  that also allowers the player to play the game again if they want.
 // Add a win condition if the player reached the PRIVATE QUARTERS
 
 const rooms = [
-  "foyer",
-  "hallway",
-  "study",
-  "lab",
-  "privateQuarters",
-  "diningHall",
+  "FOYER",
+  "HALLWAY",
+  "STUDY",
+  "LAB",
+  "PRIVATE QUARTERS",
+  "DINING HALL",
 ];
+
+// REMEMBER TO CHANGE BACK TO 0!!!!!!!!!!!!!!!!
 var currentRoom = rooms[0];
 console.log(currentRoom);
 console.log(username);
@@ -64,11 +52,16 @@ const examineSymbols = document.getElementById("examineSymbols").innerHTML;
 const examineJournal = document.getElementById("examineJournal").innerHTML;
 const examinePainting = document.getElementById("examinePainting").innerHTML;
 const examineMap = document.getElementById("examineMap").innerHTML;
-const readJournalAgain = document.getElementById("readJournalAgain").innerHTML;
+const noMore = document.getElementById("noMore").innerHTML;
 const readJournal = document.getElementById("readJournal").innerHTML;
 const examineCabinet = document.getElementById("examineCabinet").innerHTML;
 const unlockCabinet = document.getElementById("unlockCabinet").innerHTML;
 const examineEquipment = document.getElementById("examineEquipment").innerHTML;
+const examineObject = document.getElementById("examineObject").innerHTML;
+const takeObject = document.getElementById("takeObject").innerHTML;
+const escaped = document.getElementById("escaped").innerHTML;
+const gameOver = document.getElementById("gameOver").innerHTML;
+const win = document.getElementById("win").innerHTML;
 
 // flavor text
 const flavorStairs = document.getElementById("flavorStairs").innerHTML;
@@ -88,6 +81,7 @@ const mapXjournal = document.getElementById("mapXjournal").innerHTML;
 const revealLab = document.getElementById("revealLab").innerHTML;
 const pullLever = document.getElementById("pullLever").innerHTML;
 const revealStudy = document.getElementById("revealStudy").innerHTML;
+const help = document.getElementById("intro3").innerHTML;
 
 // room logic
 var foyerVisited = false;
@@ -99,14 +93,6 @@ var diningHallVisited = false;
 var labReVisited = false;
 var studyReVisited = false;
 
-// var foyerVisited = true;
-// var hallwayVisited = true;
-// var studyVisited = true;
-// var labVisited = true;
-// var privateQuartersVisited = true;
-// var diningHallVisited = true;
-// var labReVisited = false;
-
 // items
 var ironKey = false;
 var map = false;
@@ -114,13 +100,40 @@ var newMap = false;
 var leverPulled = false;
 var gem = false;
 
-// var ironKey = true;
-// var map = true;
-// var newMap = true;
-// var leverPulled = false;
+// function gameRestart(e) {
+//   if (e.value === "restart") {
+//     document.getElementById("name").classList.remove("hide");
+//     username = e.value.toUpperCase();
+//     console.log(username);
+//     var valueEntered = " ";
+//     valueEntered = e.value.toUpperCase();
+
+//     if (
+//       valueEntered !== " " &&
+//       valueEntered !== "undefined" &&
+//       valueEntered.length >= 1
+//     ) {
+//       document.getElementById("scrollingText").innerHTML = " ";
+//       document.getElementById("intro").classList.remove("hide");
+//       document.getElementById("name").classList.add("hide");
+//       document.getElementById("gameOver").classList.add("hide");
+//       document.getElementById("game").classList.remove("hide");
+
+//       document.getElementById("enterFoyer").classList.remove("hide");
+//       document.getElementById("scrollingText").classList.remove("hide");
+
+//       event.preventDefault();
+//       e.value = "";
+//       gameStarted = true;
+//       foyerVisited = true;
+//       console.log(e);
+//       // return username;
+//     }
+//   }
+// }
 
 function gameStart(e) {
-  if (event.key === "Enter" || e.keyCode === 13) {
+  if (event.key === "Enter" || e.keyCode === 13 || e.value === "restart") {
     username = e.value.toUpperCase();
     console.log(username);
     var valueEntered = e.value.toUpperCase();
@@ -132,16 +145,19 @@ function gameStart(e) {
     ) {
       document.getElementById("intro").classList.remove("hide");
       document.getElementById("name").classList.add("hide");
+      document.getElementById("gameOver").classList.add("hide");
       document.getElementById("enterFoyer").classList.remove("hide");
       document.getElementById("playerInput").classList.remove("hide");
       event.preventDefault();
       e.value = "";
       gameStarted = true;
       foyerVisited = true;
+      console.log(e);
       // return username;
     }
   }
 }
+
 function enter(e) {
   var valueEntered = e.value.toUpperCase();
   document.getElementById("intro").classList.add("hide");
@@ -156,46 +172,46 @@ function enter(e) {
           currentRoom = rooms[1];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", returnHallway);
         } else if (hallwayVisited === false) {
           currentRoom = rooms[1];
           console.log(currentRoom);
           hallwayVisited = true;
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", enterHallway);
         }
       } else if (currentRoom === rooms[1]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorStairs);
 
         console.log(currentRoom);
       } else if (currentRoom === rooms[2]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorRain);
 
         console.log(currentRoom);
       } else if (currentRoom === rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
 
         console.log(currentRoom);
@@ -203,10 +219,10 @@ function enter(e) {
         currentRoom = rooms[2];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnStudy);
       } else if (currentRoom === rooms[5]) {
         if (newMap === true && labReVisited !== true) {
@@ -214,19 +230,19 @@ function enter(e) {
           currentRoom = rooms[3];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", revealLab);
         } else {
           currentRoom = rooms[3];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", returnLab);
         }
       }
@@ -236,10 +252,10 @@ function enter(e) {
     } else if (valueEntered === "EAST" || valueEntered === "GO EAST") {
       if (currentRoom === rooms[0]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", noWayOut);
 
         console.log(currentRoom);
@@ -251,20 +267,20 @@ function enter(e) {
             console.log(currentRoom);
 
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", ">" + valueEntered);
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", revealStudy);
           } else {
             currentRoom = rooms[2];
             console.log(currentRoom);
 
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", ">" + valueEntered);
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", returnStudy);
           }
         } else {
@@ -272,18 +288,18 @@ function enter(e) {
           studyVisited = true;
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", enterStudy);
         }
       } else if (currentRoom === rooms[2]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorTTRPGS);
 
         console.log(currentRoom);
@@ -291,26 +307,26 @@ function enter(e) {
         currentRoom = rooms[1];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnHallway);
       } else if (currentRoom === rooms[4]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
 
         console.log(currentRoom);
       } else if (currentRoom === rooms[5]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
 
         console.log(currentRoom);
@@ -322,10 +338,10 @@ function enter(e) {
     } else if (valueEntered === "WEST" || valueEntered === "GO WEST") {
       if (currentRoom === rooms[0]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", noWayOut);
 
         console.log(currentRoom);
@@ -335,10 +351,10 @@ function enter(e) {
           currentRoom = rooms[3];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", enterLab);
         } else if (labVisited === true) {
           if (newMap === true && labReVisited !== true) {
@@ -346,19 +362,19 @@ function enter(e) {
             currentRoom = rooms[3];
             console.log(currentRoom);
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", ">" + valueEntered);
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", revealLab);
           } else {
             currentRoom = rooms[3];
             console.log(currentRoom);
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", ">" + valueEntered);
             document
-              .getElementById("playerInput")
+              .getElementById("scrollingText")
               .insertAdjacentHTML("beforebegin", returnLab);
           }
         }
@@ -366,35 +382,35 @@ function enter(e) {
         currentRoom = rooms[1];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnHallway);
       } else if (currentRoom === rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
 
         console.log(currentRoom);
       } else if (currentRoom === rooms[4]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
 
         console.log(currentRoom);
       } else if (currentRoom === rooms[5]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
 
         console.log(currentRoom);
@@ -407,76 +423,82 @@ function enter(e) {
         currentRoom = rooms[0];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", noHope);
       } else if (currentRoom === rooms[1]) {
         currentRoom = rooms[0];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnFoyer);
       } else if (currentRoom === rooms[2]) {
         if (leverPulled !== true) {
           console.log(currentRoom);
           privateQuartersVisited = true;
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", flavorNothing);
         } else {
           currentRoom = rooms[4];
           console.log(currentRoom);
           privateQuartersVisited = true;
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", enterPrivateQuarters);
+          document
+            .getElementById("scrollingText")
+            .insertAdjacentHTML("beforebegin", win);
         }
       } else if (currentRoom === rooms[3]) {
         if (diningHallVisited === true) {
           currentRoom = rooms[5];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", returnDiningHall);
         } else {
           diningHallVisited = true;
           currentRoom = rooms[5];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", enterDiningHall);
+          // document
+          //   .getElementById("scrollingText")
+          //   .insertAdjacentHTML("beforebegin", win);
         }
       } else if (currentRoom === rooms[4]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
         console.log(currentRoom);
       } else if (currentRoom === rooms[5]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", flavorNothing);
       }
 
@@ -490,19 +512,19 @@ function enter(e) {
     ) {
       if (foyerVisited === false) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (foyerVisited === true) {
         currentRoom = rooms[0];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnFoyer);
       }
     } else if (
@@ -512,19 +534,19 @@ function enter(e) {
     ) {
       if (hallwayVisited === false) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (hallwayVisited === true) {
         currentRoom = rooms[1];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnHallway);
       }
     } else if (
@@ -534,10 +556,10 @@ function enter(e) {
     ) {
       if (studyVisited === false) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (studyVisited === true) {
         if (leverPulled === true && studyReVisited !== true) {
@@ -545,19 +567,19 @@ function enter(e) {
           currentRoom = rooms[2];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", revealStudy);
         } else {
           currentRoom = rooms[2];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", returnStudy);
         }
       }
@@ -571,10 +593,10 @@ function enter(e) {
     ) {
       if (labVisited === false) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (labVisited === true) {
         if (newMap === true && labReVisited !== true) {
@@ -582,19 +604,19 @@ function enter(e) {
           currentRoom = rooms[3];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", revealLab);
         } else {
           currentRoom = rooms[3];
           console.log(currentRoom);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", returnLab);
         }
       }
@@ -608,19 +630,19 @@ function enter(e) {
     ) {
       if (privateQuartersVisited === false) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (privateQuartersVisited === true) {
         currentRoom = rooms[4];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnQuarters);
       }
     } else if (
@@ -630,19 +652,19 @@ function enter(e) {
     ) {
       if (diningHallVisited === false) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", unknownStill);
       } else if (diningHallVisited === true) {
         currentRoom = rooms[5];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", returnDiningHall);
       }
       //
@@ -654,25 +676,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[0]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", enterFoyer);
       } else if (currentRoom !== rooms[0]) {
         if (foyerVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", notThere);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -682,25 +704,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[1]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", examineDoors);
       } else if (currentRoom !== rooms[1]) {
         if (hallwayVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -710,25 +732,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[1]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", enterHallway);
       } else if (currentRoom !== rooms[1]) {
         if (hallwayVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -739,36 +761,36 @@ function enter(e) {
       if (currentRoom === rooms[1]) {
         if (newMap === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", translatedSymbols);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", emailAcquired);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", examineSymbols);
         }
       } else if (currentRoom !== rooms[1]) {
         if (hallwayVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -778,25 +800,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[1]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", examinePainting);
       } else if (currentRoom !== rooms[1]) {
         if (hallwayVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -808,25 +830,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", enterLab);
       } else if (currentRoom !== rooms[3]) {
         if (labVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -836,17 +858,17 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[2]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", enterStudy);
       } else if (currentRoom !== rooms[2]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", notThere);
       }
     } else if (
@@ -855,25 +877,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[2]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", examineJournal);
       } else if (currentRoom !== rooms[2]) {
         if (studyVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -882,39 +904,48 @@ function enter(e) {
       valueEntered === "EXAMINE THE CABINET"
     ) {
       if (currentRoom === rooms[3]) {
-        if (ironKey === true) {
-          map = true;
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", unlockCabinet);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", mapAcquired);
+        if (map !== true) {
+          if (ironKey === true) {
+            map = true;
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", unlockCabinet);
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", mapAcquired);
+          } else {
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", examineCabinet);
+          }
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", examineCabinet);
+            .getElementById("scrollingText")
+            .insertAdjacentHTML("beforebegin", noMore);
         }
       } else if (currentRoom !== rooms[3]) {
         if (labVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -923,39 +954,48 @@ function enter(e) {
       valueEntered === "UNLOCK THE CABINET"
     ) {
       if (currentRoom === rooms[3]) {
-        if (ironKey === true) {
-          map = true;
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", unlockCabinet);
-          document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", mapAcquired);
+        if (map !== true) {
+          if (ironKey === true) {
+            map = true;
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", unlockCabinet);
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", mapAcquired);
+          } else {
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+            document
+              .getElementById("scrollingText")
+              .insertAdjacentHTML("beforebegin", lockedCabinet);
+          }
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
-            .insertAdjacentHTML("beforebegin", lockedCabinet);
+            .getElementById("scrollingText")
+            .insertAdjacentHTML("beforebegin", noMore);
         }
       } else if (currentRoom !== rooms[3]) {
         if (labVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -966,35 +1006,35 @@ function enter(e) {
       if (currentRoom === rooms[2] && ironKey !== true) {
         ironKey = true;
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", readJournal);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", keyAcquired);
       } else if (ironKey === true) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
-          .insertAdjacentHTML("beforebegin", readJournalAgain);
+          .getElementById("scrollingText")
+          .insertAdjacentHTML("beforebegin", noMore);
       } else if (currentRoom !== rooms[2]) {
         if (studyVisited === true) {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", cantSee);
         } else {
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", ">" + valueEntered);
           document
-            .getElementById("playerInput")
+            .getElementById("scrollingText")
             .insertAdjacentHTML("beforebegin", error);
         }
       }
@@ -1004,17 +1044,17 @@ function enter(e) {
     ) {
       if (map === true) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", examineMap);
       } else if (map !== true) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", error);
       }
     } else if (
@@ -1024,24 +1064,24 @@ function enter(e) {
       if (map === true && currentRoom === rooms[2]) {
         newMap = true;
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", mapXjournal);
       } else if (map === true && currentRoom !== rooms[2]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", notJournal);
       } else {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", error);
       }
     } else if (
@@ -1050,24 +1090,24 @@ function enter(e) {
     ) {
       if (newMap === true && currentRoom === rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", examineEquipment);
       } else if (newMap === true && currentRoom !== rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", cantSee);
       } else {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", error);
       }
     } else if (
@@ -1077,24 +1117,24 @@ function enter(e) {
       if (newMap === true && currentRoom === rooms[3]) {
         leverPulled = true;
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", pullLever);
       } else if (newMap === true && currentRoom !== rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", cantSee);
       } else {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", error);
       }
     } else if (
@@ -1103,25 +1143,25 @@ function enter(e) {
     ) {
       if (currentRoom === rooms[5]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           // ---------------------------------------------add shit here pls-----------------------
-          .insertAdjacentHTML("beforebegin", "examineObject");
+          .insertAdjacentHTML("beforebegin", examineObject);
       } else if (diningHallVisited === true && currentRoom !== rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", cantSee);
       } else {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", error);
       }
     } else if (
@@ -1133,53 +1173,66 @@ function enter(e) {
       if (currentRoom === rooms[5]) {
         gem = true;
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           // ---------------------------------------------add shit here pls-----------------------
-          .insertAdjacentHTML("beforebegin", "takeObject");
+          .insertAdjacentHTML("beforebegin", takeObject);
       } else if (diningHallVisited === true && currentRoom !== rooms[3]) {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", cantSee);
       } else {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", error);
       }
     } else if (gem === true) {
       if (valueEntered !== "JUMP NORTH") {
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
-        document
-          .getElementById("playerInput")
-          // ---------------------------------------------add shit here pls-----------------------
-          .insertAdjacentHTML("beforebegin", "ded");
+        document.getElementById("gameOver").classList.remove("hide");
+        document.getElementById("game").classList.add("hide");
       } else {
         currentRoom = rooms[3];
         console.log(currentRoom);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           .insertAdjacentHTML("beforebegin", ">" + valueEntered);
         document
-          .getElementById("playerInput")
+          .getElementById("scrollingText")
           // ---------------------------------------------add shit here pls-----------------------
-          .insertAdjacentHTML("beforebegin", "escaped");
+          .insertAdjacentHTML("beforebegin", escaped);
       }
-    } else {
+    } else if (valueEntered === "HELP") {
       document
-        .getElementById("playerInput")
+        .getElementById("scrollingText")
         .insertAdjacentHTML("beforebegin", ">" + valueEntered);
       document
-        .getElementById("playerInput")
+        .getElementById("scrollingText")
+        .insertAdjacentHTML("beforebegin", help);
+      document
+        .getElementById("scrollingText")
+        .insertAdjacentHTML(
+          "beforebegin",
+          "<p>You're currently in the <span class='highlight'>" +
+            currentRoom +
+            "</span></p>"
+        );
+    } else {
+      document
+        .getElementById("scrollingText")
+        .insertAdjacentHTML("beforebegin", ">" + valueEntered);
+      document
+        .getElementById("scrollingText")
         .insertAdjacentHTML("beforebegin", error);
     }
   }
@@ -1192,48 +1245,48 @@ function changeText(e) {
     .insertAdjacentHTML("beforebegin", `${username}`);
 }
 
-document.querySelectorAll(".codedText").forEach((t) => {
-  const arr1 = t.innerHTML.split("");
-  const arr2 = [];
-  arr1.forEach((char, i) => (arr2[i] = randChar())); //fill arr2 with random characters
-  t.onpointerover = () => {
-    const tl = gsap.timeline();
-    let step = 0;
-    tl.fromTo(
-      t,
-      {
-        innerHTML: arr2.join(""),
-        color: "#000",
-        background: "#bada55",
-      },
-      {
-        duration: arr1.length / 20, //duration based on text length
-        ease: "power4.in",
-        delay: 0.1,
-        color: "#fff",
-        background: "#000",
-        onUpdate: () => {
-          const p = Math.floor(tl.progress() * arr1.length); //whole number from 0 - text length
-          if (step != p) {
-            //throttle the change of random characters
-            step = p;
-            arr1.forEach((char, i) => (arr2[i] = randChar()));
-            let pt1 = arr1.join("").substring(p, 0),
-              pt2 = arr2.join("").substring(arr2.length - p, 0);
-            if (t.classList.contains("fromRight")) {
-              pt1 = arr2.join("").substring(arr2.length - p, 0);
-              pt2 = arr1.join("").substring(arr1.length - p);
-            }
-            t.innerHTML = pt1 + pt2; //update text
-          }
-        },
-      }
-    );
-  };
-});
+// document.querySelectorAll(".codedText").forEach((t) => {
+//   const arr1 = t.innerHTML.split("");
+//   const arr2 = [];
+//   arr1.forEach((char, i) => (arr2[i] = randChar())); //fill arr2 with random characters
+//   t.onpointerover = () => {
+//     const tl = gsap.timeline();
+//     let step = 0;
+//     tl.fromTo(
+//       t,
+//       {
+//         innerHTML: arr2.join(""),
+//         color: "#000",
+//         background: "#bada55",
+//       },
+//       {
+//         duration: arr1.length / 20, //duration based on text length
+//         ease: "power4.in",
+//         delay: 0.1,
+//         color: "#fff",
+//         background: "#000",
+//         onUpdate: () => {
+//           const p = Math.floor(tl.progress() * arr1.length); //whole number from 0 - text length
+//           if (step != p) {
+//             //throttle the change of random characters
+//             step = p;
+//             arr1.forEach((char, i) => (arr2[i] = randChar()));
+//             let pt1 = arr1.join("").substring(p, 0),
+//               pt2 = arr2.join("").substring(arr2.length - p, 0);
+//             if (t.classList.contains("fromRight")) {
+//               pt1 = arr2.join("").substring(arr2.length - p, 0);
+//               pt2 = arr1.join("").substring(arr1.length - p);
+//             }
+//             t.innerHTML = pt1 + pt2; //update text
+//           }
+//         },
+//       }
+//     );
+//   };
+// });
 
-function randChar() {
-  let c = "abcdefghijklmnopqrstuvwxyz1234567890!@#$^&*()…æ_+-=;[]/~`";
-  c = c[Math.floor(Math.random() * c.length)];
-  return Math.random() > 0.5 ? c : c.toUpperCase();
-}
+// function randChar() {
+//   let c = "abcdefghijklmnopqrstuvwxyz1234567890!@#$^&*()…æ_+-=;[]/~`";
+//   c = c[Math.floor(Math.random() * c.length)];
+//   return Math.random() > 0.5 ? c : c.toUpperCase();
+// }
